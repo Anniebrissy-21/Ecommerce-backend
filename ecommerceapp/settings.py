@@ -31,7 +31,7 @@ SECRET_KEY = 'django-insecure-8t(x1+1cgcl0x4=@uys#)9tkg0b1i3(4iipcg34^squ=)oitl(
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['ecommerce-backend-mjsw.onrender.com', 'localhost', '127.0.0.1']
+ALLOWED_HOSTS = ['shopitapp2.onrender.com', 'localhost', '127.0.0.1']
 
 
 # Application definition
