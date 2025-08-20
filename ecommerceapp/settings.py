@@ -64,7 +64,8 @@ MIDDLEWARE = [
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",
     "http://localhost:5174",
-    "http://localhost:5175"
+    "http://localhost:5175",
+    "https://shopitapp1.onrender.com"
 ]
 
 ROOT_URLCONF = 'ecommerceapp.urls'
