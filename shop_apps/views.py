@@ -11,6 +11,8 @@ import uuid
 import requests
 import paypalrestsdk
 from  django.conf import settings
+from django.contrib.auth import get_user_model
+
 # from ecommerceapp import settings
 
 # Create your views here.
@@ -320,3 +322,10 @@ def paypal_payment_callback(request):
         return Response({"message": "Payment successful", "subMessage": "You have successfully made payment for the items you purchased"})
     else:
         return Response({"error": payment.error}, status=400)
+
+def create_superuser_view(request):
+    User = get_user_model()
+    if not User.objects.filter(username='admin').exists():
+        User.objects.create_superuser('admin', 'admin@example.com', '12345678')
+        return Response("Superuser created")
+    return Response("Superuser already exists")
