@@ -12,6 +12,8 @@ import requests
 import paypalrestsdk
 from  django.conf import settings
 from django.contrib.auth import get_user_model
+from django.views.decorators.csrf import csrf_exempt
+
 
 # from ecommerceapp import settings
 
@@ -323,6 +325,7 @@ def paypal_payment_callback(request):
     else:
         return Response({"error": payment.error}, status=400)
 
+@csrf_exempt
 def create_superuser_view(request):
     User = get_user_model()
     if not User.objects.filter(username='admin').exists():
