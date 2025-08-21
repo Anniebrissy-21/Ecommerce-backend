@@ -79,7 +79,7 @@ def products_in_cart(request):
     cart_code = request.query_params.get('cart_code')
     product_id = request.query_params.get("product_id")
     try:
-        cart = Cart.objects.get(cart_code=cart_code)
+        cart, created = Cart.objects.get_or_create(cart_code=cart_code, paid=False)
     except Cart.DoesNotExist:
         return Response({"detail": "Cart not found."}, status=404)
 
