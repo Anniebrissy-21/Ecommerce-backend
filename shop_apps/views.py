@@ -13,6 +13,7 @@ import paypalrestsdk
 from  django.conf import settings
 from django.contrib.auth import get_user_model
 from django.views.decorators.csrf import csrf_exempt
+from django.http import HttpResponse
 
 
 # from ecommerceapp import settings
@@ -330,5 +331,5 @@ def create_superuser_view(request):
     User = get_user_model()
     if not User.objects.filter(username='admin').exists():
         User.objects.create_superuser('admin', 'admin@example.com', '12345678')
-        return Response("Superuser created")
-    return Response("Superuser already exists")
+        return HttpResponse("Superuser created")
+    return HttpResponse("Superuser already exists")
