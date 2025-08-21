@@ -254,7 +254,7 @@ def initiate_paypal_payment(request):
             },
             "redirect_urls": {
                 #use a single redirect url for both success and cancel
-                "return_url": f"{BASE_URL}/payment-status?paumentStatus=success&ref={tx_ref}",
+                "return_url": f"{BASE_URL}/payment-status?paymentStatus=success&ref={tx_ref}",
                 "cancel_url": f"{BASE_URL}/payment-status?paymentStatus=cancel"
             },
             "transactions": [{
