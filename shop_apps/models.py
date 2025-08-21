@@ -10,7 +10,7 @@ class Product(models.Model):
         ("Clothings", "CLOTHINGS")
     )
     name = models.CharField(max_length=100)
-    slug = models.SlugField(blank=True, null=True)
+    slug = models.SlugField(max_length=100, blank=True, null=True)
     image = models.ImageField(upload_to="img")
     description = models.TextField(blank=True, null=True)
     price = models.DecimalField(max_digits=10, decimal_places=2)
@@ -24,11 +24,13 @@ class Product(models.Model):
             self.slug = slugify(self.name)
             unique_slug = self.slug
             counter = 1
-            if Product.objects.filter(slug=unique_slug).exists():
+            while Product.objects.filter(slug=unique_slug).exists():
                 unique_slug = f'{self.slug}-{counter}'
                 counter += 1
             self.slug = unique_slug
+
         super().save(*args, **kwargs)
+
 
 class Cart(models.Model):
     cart_code = models.CharField(max_length=11, unique=True)
