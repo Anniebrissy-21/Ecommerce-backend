@@ -46,7 +46,8 @@ INSTALLED_APPS = [
     'core',
     'shop_apps',
     'rest_framework',
-    'corsheaders'
+    'corsheaders',
+    'storages'
 ]
 
 MIDDLEWARE = [
@@ -185,3 +186,12 @@ PAYPAL_CLIENT_SECRET = 'EHZogsvQtu2vxHl-yaunOpijaCOOaqgv0AsIFVKgJE2iH7CJsKEnx1f4
 PAYPAL_MODE = 'sandbox' #or live when ready for production
 
 REACT_BASE_URL = os.getenv("REACT_BASE_URL", "http://localhost:5173")
+
+AWS_ACCESS_KEY_ID = os.getenv('AWS_ACCESS_KEY_ID')
+AWS_SECRET_ACCESS_KEY = os.getenv('AWS_SECRET_ACCESS_KEY')
+AWS_STORAGE_BUCKET_NAME = os.getenv('AWS_STORAGE_BUCKET_NAME')
+AWS_S3_REGION_NAME = os.getenv('AWS_S3_REGION_NAME')
+AWS_S3_CUSTOM_DOMAIN = f'{AWS_STORAGE_BUCKET_NAME}.s3.amazonaws.com'
+
+MEDIA_URL = f'https://{AWS_S3_CUSTOM_DOMAIN}/'
+DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
