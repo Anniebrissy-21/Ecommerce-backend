@@ -67,12 +67,40 @@ def add_item(request):
 def get_cart_status(request):
     cart_code = request.query_params.get('cart_code')
     try:
-        cart = Cart.objects.get(cart_code=cart_code, paid=False)
+        cart, created = Cart.objects.get_or_create(cart_code=cart_code, paid=False)
     except Cart.DoesNotExist:
         return Response({"detail": "Cart not found."}, status=404)
     serializer = CartCountSerializer(cart)
     return Response(serializer.data)
 
+
+@api_view(['GET'])
+def products_in_cart(request):
+    cart_code = request.query_params.get('cart_code')
+    product_id = request.query_params.get("product_id")
+    try:
+        cart, created = Cart.objects.get_or_create(cart_code=cart_code, paid=False)
+    except Cart.DoesNotExist:
+        return Response({"detail": "Cart not found."}, status=404)
+
+    try:
+        product = Product.objects.get(id=product_id)
+    except Product.DoesNotExist:
+        return Response({"detail": "Product not found."}, status=404)
+
+    product_exists_in_cart = CartItem.objects.filter(cart=cart, product=product).exists()
+    return Response({'product_in_cart': product_exists_in_cart})
+
+
+@api_view(['GET'])
+def get_cart(request):
+    cart_code = request.query_params.get('cart_code')
+    try:
+        cart = Cart.objects.get(cart_code=cart_code, paid=False)
+    except Cart.DoesNotExist:
+        return Response({"detail": "Cart not found."}, status=404)
+    serializer = CartSerializer(cart)
+    return Response(serializer.data)
 
 @api_view(['GET'])
 def products_in_cart(request):
@@ -94,7 +122,10 @@ def products_in_cart(request):
 @api_view(['GET'])
 def get_cart(request):
     cart_code = request.query_params.get('cart_code')
-    cart = Cart.objects.get(cart_code=cart_code, paid=False)
+    try:
+        cart = Cart.objects.get(cart_code=cart_code, paid=False)
+    except Cart.DoesNotExist:
+        return Response({"detail": "Cart not found."}, status=404)
     serializer = CartSerializer(cart)
     return Response(serializer.data)
 
