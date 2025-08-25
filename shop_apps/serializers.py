@@ -1,10 +1,19 @@
 from rest_framework import serializers
 from .models import Product, Cart, CartItem
 from django.contrib.auth import get_user_model
+
 class ProductSerializer(serializers.ModelSerializer):
+    image = serializers.SerializerMethodField()
+
     class Meta:
         model = Product
         fields = ["id", "name", "slug", "description", "category", "price", "image"]
+
+    def get_image(self, obj):
+        if obj.image:
+            return obj.image.url  # Full S3 URL
+        return None
+
 
 class DetailProductSerializer(serializers.ModelSerializer):
     similar_products = serializers.SerializerMethodField()
