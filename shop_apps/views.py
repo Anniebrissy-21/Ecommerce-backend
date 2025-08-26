@@ -32,7 +32,7 @@ paypalrestsdk.configure({
 
 @api_view(["GET"])
 def products(request):
-    products = Product.objects.all()
+    products = Product.objects.all().order_by('?')
     serializer = ProductSerializer(products, many=True)
     return Response(serializer.data)
 
