@@ -55,13 +55,18 @@ AWS_QUERYSTRING_AUTH = False
 STORAGES = {
     "default": {
         "BACKEND": "storages.backends.s3boto3.S3Boto3Storage",
+        "OPTIONS": {
+            "querystring_auth": False,
+            "custom_domain": AWS_S3_REGION_NAME,  # 👈 force region-style URL
+        },
     },
     "staticfiles": {
         "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
     }
 }
 
-MEDIA_URL = f"https://{AWS_STORAGE_BUCKET_NAME}.s3.amazonaws.com/"
+
+MEDIA_URL = f"https://{AWS_STORAGE_BUCKET_NAME}.s3.{AWS_S3_REGION_NAME}.amazonaws.com/"
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
