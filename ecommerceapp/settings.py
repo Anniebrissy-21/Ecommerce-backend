@@ -61,7 +61,7 @@ STORAGES = {
     }
 }
 
-MEDIA_URL = f"https://{AWS_STORAGE_BUCKET_NAME}.s3.{AWS_S3_REGION_NAME}.amazonaws.com/"
+MEDIA_URL = f"https://{AWS_STORAGE_BUCKET_NAME}.s3.amazonaws.com/"
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
