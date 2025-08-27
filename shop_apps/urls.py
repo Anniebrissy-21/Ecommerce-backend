@@ -19,4 +19,5 @@ urlpatterns = [
     path("paypal_payment_callback/", views.paypal_payment_callback, name="paypal_payment_callback"),
     path("create_superuser_view/", views.create_superuser_view, name="create_superuser_view"),
     path('register/', views.register_user, name='register'),
+    path('products/all/', views.ProductListView.as_view(), name='product-list'),
 ]

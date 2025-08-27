@@ -1,9 +1,9 @@
 from django.shortcuts import render
 from rest_framework.decorators import api_view, permission_classes
 from .models import Product, Cart, CartItem, Transaction
-from .serializers import ProductSerializer, DetailProductSerializer, UserSerializer, CartSerializer, CartItemSerializer, CartCountSerializer, UserRegistrationSerializer
+from .serializers import ProductSerializer, DetailProductSerializer, UserSerializer, CartSerializer, CartItemSerializer, CartCountSerializer, UserRegistrationSerializer, ProductWithCategorySerializer
 from rest_framework.response import Response
-from rest_framework import status
+from rest_framework import status, generics
 from rest_framework.permissions import IsAuthenticated
 from decimal import Decimal
 from django.conf import settings
@@ -43,6 +43,18 @@ def products(request):
     products = Product.objects.all().order_by('?')
     serializer = ProductSerializer(products, many=True)
     return Response(serializer.data)
+
+
+class ProductListView(generics.ListAPIView):
+    serializer_class = ProductWithCategorySerializer
+
+    def get_queryset(self):
+        queryset = Product.objects.all()
+        category_param = self.request.query_params.get('category')
+        if category_param:
+            queryset = queryset.filter(category__iexact=category_param)
+        return queryset
+
 
 @api_view(["GET"])
 def product_detail(request, slug):
