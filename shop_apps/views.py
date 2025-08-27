@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from rest_framework.decorators import api_view, permission_classes
 from .models import Product, Cart, CartItem, Transaction
-from .serializers import ProductSerializer, DetailProductSerializer, UserSerializer, CartSerializer, CartItemSerializer, CartCountSerializer
+from .serializers import ProductSerializer, DetailProductSerializer, UserSerializer, CartSerializer, CartItemSerializer, CartCountSerializer, UserRegistrationSerializer
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
@@ -29,6 +29,14 @@ paypalrestsdk.configure({
     "client_id": settings.PAYPAL_CLIENT_ID,
     "client_secret": settings.PAYPAL_CLIENT_SECRET
 })
+
+@api_view(["POST"])
+def register_user(request):
+    serializer = UserRegistrationSerializer(data=request.data)
+    if serializer.is_valid():
+        user = serializer.save()
+        return Response({"message": "User registered successfully"}, status=status.HTTP_201_CREATED)
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(["GET"])
 def products(request):
