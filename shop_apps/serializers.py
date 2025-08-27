@@ -41,6 +41,15 @@ class ProductSerializer(serializers.ModelSerializer):
         if obj.image:
             return obj.image.url  # Full S3 URL
         return None
+    
+class ProductWithCategorySerializer(serializers.ModelSerializer):
+    category_display = serializers.CharField(source='get_category_display', read_only=True)
+
+    class Meta:
+        model = Product
+        fields = [
+            'id', 'name', 'slug', 'image', 'description', 'price', 'category', 'category_display'
+        ]
 
 
 class DetailProductSerializer(serializers.ModelSerializer):
