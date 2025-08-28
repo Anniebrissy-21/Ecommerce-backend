@@ -62,3 +62,9 @@ class Transaction(models.Model):
 
     def __str__(self):
         return f"Transaction {self.ref} - {self.status}"
+    
+class WishList(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True, blank=True)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
+    is_added = models.BooleanField(default=False)

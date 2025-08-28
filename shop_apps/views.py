@@ -1,9 +1,9 @@
 from django.shortcuts import render
 from rest_framework.decorators import api_view, permission_classes
-from .models import Product, Cart, CartItem, Transaction
-from .serializers import ProductSerializer, DetailProductSerializer, UserSerializer, CartSerializer, CartItemSerializer, CartCountSerializer, UserRegistrationSerializer, ProductWithCategorySerializer
+from .models import Product, Cart, CartItem, Transaction, WishList
+from .serializers import ProductSerializer, DetailProductSerializer, UserSerializer, CartSerializer,CartItemSerializer, CartCountSerializer, UserRegistrationSerializer, ProductWithCategorySerializer, WishListSerializer
 from rest_framework.response import Response
-from rest_framework import status, generics
+from rest_framework import status, generics, viewsets
 from rest_framework.permissions import IsAuthenticated
 from decimal import Decimal
 from django.conf import settings
@@ -76,11 +76,17 @@ def add_item(request):
 
         cartitem, created = CartItem.objects.get_or_create(cart=cart, product=product)
 
-        cartitem.quantity = 1
+        if not created:
+            # If CartItem already exists, increase quantity by 1
+            cartitem.quantity += 1
+        else:
+            # For new CartItem, initialize quantity to 1
+            cartitem.quantity = 1
+
         cartitem.save()
 
         serializer = CartItemSerializer(cartitem)
-        return Response({"data": serializer.data, "message": "CartItem created Successfully"},
+        return Response({"data": serializer.data, "message": "CartItem added/updated Successfully"},
                         status=201)
     except Exception as e:
         return Response({"error": str(e)}, status=400)
@@ -395,3 +401,7 @@ def create_superuser_view(request):
         User.objects.create_superuser('admin', 'admin@example.com', '12345678')
         return HttpResponse("Superuser created")
     return HttpResponse("Superuser already exists")
+
+class WishListViewSet(viewsets.ModelViewSet):
+    queryset = WishList.objects.all()
+    serializer_class = WishListSerializer

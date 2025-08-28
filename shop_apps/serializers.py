@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Product, Cart, CartItem
+from .models import Product, Cart, CartItem, WishList
 from django.contrib.auth import get_user_model
 
 User = get_user_model()
@@ -135,4 +135,8 @@ class UserSerializer(serializers.ModelSerializer):
         cartitems = CartItem.objects.filter(cart__user = user, cart__paid=True)[:10]
         serializer = NewCartItemSerializer(cartitems, many=True)
         return serializer.data
-    
+
+class WishListSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = WishList
+        fields = "__all__"

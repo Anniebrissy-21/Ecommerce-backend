@@ -1,5 +1,9 @@
-from django.urls import path
+from django.urls import path, include
 from . import views
+from rest_framework.routers import DefaultRouter
+
+router = DefaultRouter()
+router.register(r'wishlist', views.WishListViewSet)
 
 
 urlpatterns = [
@@ -20,4 +24,6 @@ urlpatterns = [
     path("create_superuser_view/", views.create_superuser_view, name="create_superuser_view"),
     path('register/', views.register_user, name='register'),
     path('products/all/', views.ProductListView.as_view(), name='product-list'),
+
+    path('', include(router.urls))
 ]
