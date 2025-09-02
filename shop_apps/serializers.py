@@ -137,6 +137,7 @@ class UserSerializer(serializers.ModelSerializer):
         return serializer.data
 
 class WishListSerializer(serializers.ModelSerializer):
+    product = ProductSerializer(read_only=True)
     class Meta:
         model = WishList
         fields = "__all__"
