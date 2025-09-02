@@ -24,6 +24,8 @@ urlpatterns = [
     path("create_superuser_view/", views.create_superuser_view, name="create_superuser_view"),
     path('register/', views.register_user, name='register'),
     path('products/all/', views.ProductListView.as_view(), name='product-list'),
+    path('cart_code_add/', views.cart_code_add, name="cart_code_add"),
+    path('api/add_to_cart/', views.add_to_cart, name="add_to_cart"),
 
     path('', include(router.urls))
 ]

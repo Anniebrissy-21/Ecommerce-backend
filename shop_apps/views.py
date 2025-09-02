@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from rest_framework.decorators import api_view, permission_classes
 from .models import Product, Cart, CartItem, Transaction, WishList
-from .serializers import ProductSerializer, DetailProductSerializer, UserSerializer, CartSerializer,CartItemSerializer, CartCountSerializer, UserRegistrationSerializer, ProductWithCategorySerializer, WishListSerializer
+from .serializers import ProductSerializer, DetailProductSerializer, UserSerializer, CartSerializer,CartItemSerializer, CartCountSerializer, UserRegistrationSerializer, ProductWithCategorySerializer, WishListSerializer, CartCodeSerializer
 from rest_framework.response import Response
 from rest_framework import status, generics, viewsets
 from rest_framework.permissions import IsAuthenticated
@@ -37,6 +37,13 @@ def register_user(request):
         user = serializer.save()
         return Response({"message": "User registered successfully"}, status=status.HTTP_201_CREATED)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['POST'])
+def cart_code_add(request):
+    cart_code = request.data.get('cart_code')
+    cart_create = Cart.objects.create(cart_code=cart_code)
+    serializer = CartCodeSerializer(cart_create)
+    return Response(serializer.data)
 
 @api_view(["GET"])
 def products(request):
@@ -130,32 +137,24 @@ def get_cart(request):
     serializer = CartSerializer(cart)
     return Response(serializer.data)
 
-@api_view(['GET'])
-def products_in_cart(request):
-    cart_code = request.query_params.get('cart_code')
-    product_id = request.query_params.get("product_id")
-    try:
-        cart = Cart.objects.get(cart_code=cart_code)
-    except Cart.DoesNotExist:
-        return Response({"detail": "Cart not found."}, status=404)
+@api_view(['POST'])
+def add_to_cart(request):
+    cart_id = request.data.get('cart')
+    product_id = request.data.get('product')
+    quantity = request.data.get('quantity')
+
+    if not (cart_id and product_id and quantity):
+        return Response({"error": "Missing required fields"}, status=status.HTTP_400_BAD_REQUEST)
 
     try:
+        cart = Cart.objects.get(id=cart_id)
         product = Product.objects.get(id=product_id)
-    except Product.DoesNotExist:
-        return Response({"detail": "Product not found."}, status=404)
+    except (Cart.DoesNotExist, Product.DoesNotExist):
+        return Response({"error": "Cart or Product not found"}, status=status.HTTP_404_NOT_FOUND)
 
-    product_exists_in_cart = CartItem.objects.filter(cart=cart, product=product).exists()
-    return Response({'product_in_cart': product_exists_in_cart})
+    cart_item = CartItem.objects.create(cart=cart, product=product, quantity=quantity)
 
-@api_view(['GET'])
-def get_cart(request):
-    cart_code = request.query_params.get('cart_code')
-    try:
-        cart = Cart.objects.get(cart_code=cart_code, paid=False)
-    except Cart.DoesNotExist:
-        return Response({"detail": "Cart not found."}, status=404)
-    serializer = CartSerializer(cart)
-    return Response(serializer.data)
+    return Response({"message": "Item added to cart", "cart_item_id": cart_item.id}, status=status.HTTP_201_CREATED)
 
 @api_view(['PATCH'])
 def update_quantity(request):

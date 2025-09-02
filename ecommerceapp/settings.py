@@ -67,6 +67,11 @@ STORAGES = {
     }
 }
 
+CSRF_TRUSTED_ORIGINS = [
+    "http://localhost:5173",
+]
+
+CORS_ALLOW_CREDENTIALS = True
 
 MEDIA_URL = f"https://{AWS_S3_CUSTOM_DOMAIN}/"
 

@@ -29,6 +29,10 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
         user.save()
         return user
 
+class CartCodeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Cart
+        fields = "__all__"
 
 class ProductSerializer(serializers.ModelSerializer):
     image = serializers.SerializerMethodField()
@@ -137,7 +141,14 @@ class UserSerializer(serializers.ModelSerializer):
         return serializer.data
 
 class WishListSerializer(serializers.ModelSerializer):
+    # Nested product details for output (read-only)
     product = ProductSerializer(read_only=True)
+    # Accept product ID for input
+    product_id = serializers.PrimaryKeyRelatedField(
+        queryset=Product.objects.all(), source='product', write_only=True
+    )
+
     class Meta:
         model = WishList
-        fields = "__all__"
+        fields = ['id', 'product', 'product_id', 'user', 'is_added']
+        read_only_fields = ['user']
